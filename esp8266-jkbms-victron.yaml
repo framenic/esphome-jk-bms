@@ -1,0 +1,415 @@
+substitutions:
+  name: jk-bms
+  device_description: "Monitor a JK-BMS using the GPS port (UART-TTL)"
+  external_components_source: github://framenic/esphome-jk-bms@main
+  
+# set to hardware uart
+  tx_pin: GPIO1
+  rx_pin: GPIO3
+
+  reboot_time: "30min"
+
+esphome:
+  name: ${name}
+  comment: ${device_description}
+  min_version: 2024.6.0
+  project:
+    name: "syssi.esphome-jk-bms"
+    version: 2.2.0
+#  platformio_options:
+#    build_flags: 
+#      - -DCONFIG_ARDUINO_LOOP_STACK_SIZE=16384
+
+esp8266:
+  board: d1_mini
+
+external_components:
+  - source: ${external_components_source}
+    refresh: 0s
+
+wifi:
+  networks:
+  - ssid: !secret wifi_ssid1
+    password: !secret wifi_password1
+  - ssid: !secret wifi_ssid2
+    password: !secret wifi_password2
+
+  reboot_timeout : ${reboot_time}
+
+ota:
+  platform: esphome
+
+logger:
+  baud_rate: 0
+  level: INFO
+
+# If you use Home Assistant please remove this `mqtt` section and uncomment the `api` component!
+# The native API has many advantages over MQTT: https://esphome.io/components/api.html#advantages-over-mqtt
+mqtt:
+  broker: !secret mqtt_host
+  username: !secret mqtt_user
+  password: !secret mqtt_password
+  id: mqtt_client
+  reboot_timeout: 0s
+  topic_prefix: null
+  discovery: false # disable entity discovery
+  discover_ip: true # enable device discovery
+
+api:
+
+# Enable status LED
+status_led:
+  pin:
+    number: GPIO2
+    inverted: true
+
+#web_server:
+#  port: 80
+#  local: true
+#  log: false
+
+uart:
+  - id: uart_0
+    baud_rate: 115200
+    rx_buffer_size: 384
+    tx_pin: ${tx_pin}
+    rx_pin: ${rx_pin}
+
+jk_modbus:
+  - id: modbus0
+    uart_id: uart_0
+    rx_timeout: 50ms
+
+jk_bms:
+  - id: bms0
+    jk_modbus_id: modbus0
+    update_interval: 1s
+
+binary_sensor:
+  - platform: jk_bms
+    balancing:
+      name: "${name} balancing"
+      id: balancing
+    balancing_switch:
+      name: "${name} balancing switch"
+    charging:
+      name: "${name} charging"
+      id: charging
+    discharging:
+      name: "${name} discharging"
+      id: discharging
+    dedicated_charger_switch:
+      name: "${name} dedicated charger switch"
+    online_status:
+      name: "${name} online status"
+
+sensor:
+  - platform: jk_bms
+    min_cell_voltage:
+      name: "${name} min cell voltage"
+      id: min_cell_voltage
+    max_cell_voltage:
+      name: "${name} max cell voltage"
+      id: max_cell_voltage
+    min_voltage_cell:
+      name: "${name} min voltage cell"
+      id: min_voltage_cell
+    max_voltage_cell:
+      name: "${name} max voltage cell"
+      id: max_voltage_cell
+    delta_cell_voltage:
+      name: "${name} delta cell voltage"
+      id: delta_cell_voltage
+    average_cell_voltage:
+      name: "${name} average cell voltage"
+      id: average_cell_voltage
+    cell_voltage_1:
+      name: "${name} cell voltage 1"
+      id: cell_voltage_1
+    cell_voltage_2:
+      name: "${name} cell voltage 2"
+      id: cell_voltage_2
+    cell_voltage_3:
+      name: "${name} cell voltage 3"
+      id: cell_voltage_3
+    cell_voltage_4:
+      name: "${name} cell voltage 4"
+      id: cell_voltage_4
+    cell_voltage_5:
+      name: "${name} cell voltage 5"
+      id: cell_voltage_5
+    cell_voltage_6:
+      name: "${name} cell voltage 6"
+      id: cell_voltage_6
+    cell_voltage_7:
+      name: "${name} cell voltage 7"
+      id: cell_voltage_7
+    cell_voltage_8:
+      name: "${name} cell voltage 8"
+      id: cell_voltage_8
+    cell_voltage_9:
+      name: "${name} cell voltage 9"
+      id: cell_voltage_9
+    cell_voltage_10:
+      name: "${name} cell voltage 10"
+      id: cell_voltage_10
+    cell_voltage_11:
+      name: "${name} cell voltage 11"
+      id: cell_voltage_11
+    cell_voltage_12:
+      name: "${name} cell voltage 12"
+      id: cell_voltage_12
+    cell_voltage_13:
+      name: "${name} cell voltage 13"
+      id: cell_voltage_13
+    cell_voltage_14:
+      name: "${name} cell voltage 14"
+      id: cell_voltage_14
+    cell_voltage_15:
+      name: "${name} cell voltage 15"
+      id: cell_voltage_15
+    cell_voltage_16:
+      name: "${name} cell voltage 16"
+      id: cell_voltage_16
+    cell_voltage_17:
+      name: "${name} cell voltage 17"
+      id: cell_voltage_17
+    cell_voltage_18:
+      name: "${name} cell voltage 18"
+      id: cell_voltage_18
+    cell_voltage_19:
+      name: "${name} cell voltage 19"
+      id: cell_voltage_19
+    cell_voltage_20:
+      name: "${name} cell voltage 20"
+      id: cell_voltage_20
+    cell_voltage_21:
+      name: "${name} cell voltage 21"
+      id: cell_voltage_21
+    cell_voltage_22:
+      name: "${name} cell voltage 22"
+      id: cell_voltage_22
+    cell_voltage_23:
+      name: "${name} cell voltage 23"
+      id: cell_voltage_23
+    cell_voltage_24:
+      name: "${name} cell voltage 24"
+      id: cell_voltage_24
+    power_tube_temperature:
+      name: "${name} power MOS temperature"
+      id: power_mos_temperature
+    temperature_sensor_1:
+      name: "${name} temperature sensor 1"
+      id: temperature_sensor_1
+    temperature_sensor_2:
+      name: "${name} temperature sensor 2"
+      id: temperature_sensor_2
+    total_voltage:
+      name: "${name} total voltage"
+      id: total_voltage
+    current:
+      name: "${name} current"
+      id: current
+    power:
+      name: "${name} power"
+      id: power
+    charging_power:
+      name: "${name} charging power"
+    discharging_power:
+      name: "${name} discharging power"
+    capacity_remaining:
+      name: "${name} capacity remaining"
+      id: capacity_remaining
+    capacity_remaining_derived:
+      name: "${name} capacity remaining derived"
+      id: capacity_remaining_derived
+    temperature_sensors:
+      name: "${name} temperature sensors"
+    charging_cycles:
+      name: "${name} charging cycles"
+      id: charging_cycles
+    total_charging_cycle_capacity:
+      name: "${name} total charging cycle capacity"
+      id: total_charging_cycle_capacity
+    battery_strings:
+      name: "${name} battery strings"
+      id: battery_strings
+    errors_bitmask:
+      name: "${name} errors bitmask"
+      id: errors_bitmask
+    operation_mode_bitmask:
+      name: "${name} operation mode bitmask"
+      id: operation_mode_bitmask
+    total_voltage_overvoltage_protection:
+      name: "${name} total voltage overvoltage protection"
+      id: total_voltage_overvoltage_protection
+    total_voltage_undervoltage_protection:
+      name: "${name} total voltage undervoltage protection"
+    cell_voltage_overvoltage_protection:
+      name: "${name} cell voltage overvoltage protection"
+    cell_voltage_overvoltage_recovery:
+      name: "${name} cell voltage overvoltage recovery"
+    cell_voltage_overvoltage_delay:
+      name: "${name} cell voltage overvoltage delay"
+    cell_voltage_undervoltage_protection:
+      name: "${name} cell voltage undervoltage protection"
+    cell_voltage_undervoltage_recovery:
+      name: "${name} cell voltage undervoltage recovery"
+    cell_voltage_undervoltage_delay:
+      name: "${name} cell voltage undervoltage delay"
+    cell_pressure_difference_protection:
+      name: "${name} cell voltage difference protection"
+    discharging_overcurrent_protection:
+      name: "${name} discharging overcurrent protection"
+      id: discharging_overcurrent_protection
+    discharging_overcurrent_delay:
+      name: "${name} discharging overcurrent delay"
+    charging_overcurrent_protection:
+      name: "${name} charging overcurrent protection"
+      id: charging_overcurrent_protection
+    charging_overcurrent_delay:
+      name: "${name} charging overcurrent delay"
+    balance_starting_voltage:
+      name: "${name} balance starting voltage"
+      id: balance_starting_voltage
+    balance_opening_pressure_difference:
+      name: "${name} balance starting voltage difference"
+      id: balance_starting_voltage_difference
+    power_tube_temperature_protection:
+      name: "${name} power MOS temperature protection"
+    power_tube_temperature_recovery:
+      name: "${name} power MOS temperature recovery"
+    temperature_sensor_temperature_protection:
+      name: "${name} temperature sensor temperature protection"
+    temperature_sensor_temperature_recovery:
+      name: "${name} temperature sensor temperature recovery"
+    temperature_sensor_temperature_difference_protection:
+      name: "${name} temperature sensor temperature difference protection"
+    charging_high_temperature_protection:
+      name: "${name} charging high temperature protection"
+    discharging_high_temperature_protection:
+      name: "${name} discharging high temperature protection"
+    charging_low_temperature_protection:
+      name: "${name} charging low temperature protection"
+    charging_low_temperature_recovery:
+      name: "${name} charging low temperature recovery"
+    discharging_low_temperature_protection:
+      name: "${name} discharging low temperature protection"
+    discharging_low_temperature_recovery:
+      name: "${name} discharging low temperature recovery"
+    total_battery_capacity_setting:
+      name: "${name} total battery capacity setting"
+      id: total_battery_capacity_setting
+    current_calibration:
+      name: "${name} current calibration"
+    device_address:
+      name: "${name} device address"
+    sleep_wait_time:
+      name: "${name} sleep wait time"
+      id: sleep_wait_time
+    alarm_low_volume:
+      name: "${name} alarm low volume"
+      id: alarm_low_volume
+    manufacturing_date:
+      name: "${name} manufacturing date"
+    total_runtime:
+      name: "${name} total runtime"
+#    start_current_calibration:
+#      name: "${name} start current calibration"
+    actual_battery_capacity:
+      name: "${name} actual battery capacity"
+      id: actual_battery_capacity
+#      on_value:
+#        - mqtt.publish_json:
+#            topic: "state/${name}/data"
+#            payload: |-
+#              root["Dc"]["Power"]          = (float)id(total_voltage).state;  
+#              root["Dc"]["Voltage"]        = (float)id(power).state;  
+#              root["Dc"]["Current"]        = (float)id(current).state;  
+#              root["Dc"]["Temperature"]        = max((float)id(temperature_sensor_1).state,(float)id(temperature_sensor_1).state);  
+#              root["Soc"]          = (float)id(capacity_remaining).state;  
+      
+      
+      
+#    protocol_version:
+#      name: "${name} protocol version"
+
+globals:
+  - id: cellID_string
+    type: std::array<std::string, 24>
+    restore_value: no
+    initial_value: '{"C1","C2","C3","C4","C5","C6","C7","C8","C9","C10","C11","C12","C13","C14","C15","C16","C17","C18","C19","C20","C21","C22","C23","C24"}'
+
+
+interval:
+  - interval: 1s
+    then:
+      - mqtt.publish_json:
+           topic: "state/${name}/data"
+           payload: |-
+              root["Dc"]["Power"]          = (float)id(power).state;  
+              root["Dc"]["Voltage"]        = (float)id(total_voltage).state;  
+              root["Dc"]["Current"]        = (float)id(current).state;  
+              root["Dc"]["Temperature"]        = max((float)id(temperature_sensor_1).state,(float)id(temperature_sensor_1).state);  
+              root["InstalledCapacity"]          = (float)id(total_battery_capacity_setting).state;
+              root["Capacity"]          = (float)id(capacity_remaining_derived).state;
+              root["Soc"]          = (float)id(capacity_remaining).state;
+              
+              root["Info"]["MaxChargeVoltage"]          = (float)id(total_voltage_overvoltage_protection).state;  
+              root["Info"]["MaxChargeCurrent"]          = (float)id(charging_overcurrent_protection).state;  
+              root["Info"]["MaxDischargeCurrent"]          = (float)id(discharging_overcurrent_protection).state;  
+              
+              root["Alarms"]["LowVoltage"]           = (((unsigned int)id(errors_bitmask).state >> 3) & 1)<<1;
+              root["Alarms"]["HighVoltage"]          = (((unsigned int)id(errors_bitmask).state >> 2) & 1)<<1;                     
+              root["Alarms"]["LowSoc"]               = (((unsigned int)id(errors_bitmask).state >> 0) & 1);                          
+              root["Alarms"]["HighChargeCurrent"]    = (((unsigned int)id(errors_bitmask).state >> 5) & 1)<<1;
+              root["Alarms"]["HighDischargeCurrent"] = (((unsigned int)id(errors_bitmask).state >> 6) & 1)<<1;            
+              root["Alarms"]["HighCurrent"]          = (((unsigned int)id(errors_bitmask).state >> 6) & 1)<<1;                     
+              root["Alarms"]["CellImbalance"]        = (((unsigned int)id(errors_bitmask).state >> 7) & 1);
+              root["Alarms"]["HighChargeTemperature"]= (((unsigned int)id(errors_bitmask).state >> 8) & 1)<<1;           
+              root["Alarms"]["LowChargeTemperature"] = (((unsigned int)id(errors_bitmask).state >> 9) & 1)<<1;            
+              root["Alarms"]["LowCellVoltage"]       = (((unsigned int)id(errors_bitmask).state >> 11) & 1)<<1;                  
+              root["Alarms"]["LowTemperature"]       = (((unsigned int)id(errors_bitmask).state >> 9) & 1)<<1;                  
+              root["Alarms"]["HighTemperature"]      = (((unsigned int)id(errors_bitmask).state >> 4) & 1)<<1;                 
+              root["Alarms"]["FuseBlown"]            = (((unsigned int)id(errors_bitmask).state >> 12) & 1)<<1;                                      
+              
+              root["System"]["MinVoltageCellId"]          = id(cellID_string)[(unsigned int)id(min_voltage_cell).state-1];  
+              root["System"]["MinCellVoltage"]          = (float)id(min_cell_voltage).state;  
+              root["System"]["MaxVoltageCellId"]          = id(cellID_string)[(unsigned int)id(max_voltage_cell).state-1];  
+              root["System"]["MaxCellVoltage"]          = (float)id(max_cell_voltage).state;  
+              root["System"]["MOSTemperature"]          = (float)id(power_mos_temperature).state;  
+              root["System"]["NrOfCellsPerBattery"]          = (unsigned int)id(battery_strings).state;  
+              root["System"]["NrOfModulesBlockingCharge"]          = id(charging).state ? 0:1;  
+              root["System"]["NrOfModulesBlockingDischarge"]          = id(discharging).state ? 0:1;  
+              
+              root["Io"]["AllowToCharge"]          = id(charging).state ? 1:0;
+              root["Io"]["AllowToDischarge"]       = id(discharging).state ? 1:0;
+              root["Io"]["AllowToBalance"]       = id(balancing).state ? 1:0;
+              
+                 
+                            
+switch:
+  - platform: jk_bms
+    charging:
+      name: "${name} charging"
+    discharging:
+      name: "${name} discharging"
+
+text_sensor:
+  - platform: jk_bms
+    errors:
+      name: "${name} errors"
+    operation_mode:
+      name: "${name} operation mode"
+    battery_type:
+      name: "${name} battery type"
+    password:
+      name: "${name} password"
+    device_type:
+      name: "${name} device type"
+    software_version:
+      name: "${name} software version"
+    manufacturer:
+      name: "${name} manufacturer"
+    total_runtime_formatted:
+      name: "${name} total runtime formatted"
