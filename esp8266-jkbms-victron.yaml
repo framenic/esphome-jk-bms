@@ -314,31 +314,10 @@ sensor:
       name: "${name} manufacturing date"
     total_runtime:
       name: "${name} total runtime"
-#    start_current_calibration:
-#      name: "${name} start current calibration"
     actual_battery_capacity:
       name: "${name} actual battery capacity"
       id: actual_battery_capacity
-#      on_value:
-#        - mqtt.publish_json:
-#            topic: "state/${name}/data"
-#            payload: |-
-#              root["Dc"]["Power"]          = (float)id(total_voltage).state;  
-#              root["Dc"]["Voltage"]        = (float)id(power).state;  
-#              root["Dc"]["Current"]        = (float)id(current).state;  
-#              root["Dc"]["Temperature"]        = max((float)id(temperature_sensor_1).state,(float)id(temperature_sensor_1).state);  
-#              root["Soc"]          = (float)id(capacity_remaining).state;  
-      
-      
-      
-#    protocol_version:
-#      name: "${name} protocol version"
 
-globals:
-  - id: cellID_string
-    type: std::array<std::string, 24>
-    restore_value: no
-    initial_value: '{"C1","C2","C3","C4","C5","C6","C7","C8","C9","C10","C11","C12","C13","C14","C15","C16","C17","C18","C19","C20","C21","C22","C23","C24"}'
 
 
 interval:
@@ -359,33 +338,9 @@ interval:
               root["Info"]["MaxChargeCurrent"]          = (float)id(charging_overcurrent_protection).state;  
               root["Info"]["MaxDischargeCurrent"]          = (float)id(discharging_overcurrent_protection).state;  
               
-              root["Alarms"]["LowVoltage"]           = (((unsigned int)id(errors_bitmask).state >> 3) & 1)<<1;
-              root["Alarms"]["HighVoltage"]          = (((unsigned int)id(errors_bitmask).state >> 2) & 1)<<1;                     
-              root["Alarms"]["LowSoc"]               = (((unsigned int)id(errors_bitmask).state >> 0) & 1);                          
-              root["Alarms"]["HighChargeCurrent"]    = (((unsigned int)id(errors_bitmask).state >> 5) & 1)<<1;
-              root["Alarms"]["HighDischargeCurrent"] = (((unsigned int)id(errors_bitmask).state >> 6) & 1)<<1;            
-              root["Alarms"]["HighCurrent"]          = (((unsigned int)id(errors_bitmask).state >> 6) & 1)<<1;                     
-              root["Alarms"]["CellImbalance"]        = (((unsigned int)id(errors_bitmask).state >> 7) & 1);
-              root["Alarms"]["HighChargeTemperature"]= (((unsigned int)id(errors_bitmask).state >> 8) & 1)<<1;           
-              root["Alarms"]["LowChargeTemperature"] = (((unsigned int)id(errors_bitmask).state >> 9) & 1)<<1;            
-              root["Alarms"]["LowCellVoltage"]       = (((unsigned int)id(errors_bitmask).state >> 11) & 1)<<1;                  
-              root["Alarms"]["LowTemperature"]       = (((unsigned int)id(errors_bitmask).state >> 9) & 1)<<1;                  
-              root["Alarms"]["HighTemperature"]      = (((unsigned int)id(errors_bitmask).state >> 4) & 1)<<1;                 
-              root["Alarms"]["FuseBlown"]            = (((unsigned int)id(errors_bitmask).state >> 12) & 1)<<1;                                      
-              
-              root["System"]["MinVoltageCellId"]          = id(cellID_string)[(unsigned int)id(min_voltage_cell).state-1];  
               root["System"]["MinCellVoltage"]          = (float)id(min_cell_voltage).state;  
-              root["System"]["MaxVoltageCellId"]          = id(cellID_string)[(unsigned int)id(max_voltage_cell).state-1];  
               root["System"]["MaxCellVoltage"]          = (float)id(max_cell_voltage).state;  
-              root["System"]["MOSTemperature"]          = (float)id(power_mos_temperature).state;  
-              root["System"]["NrOfCellsPerBattery"]          = (unsigned int)id(battery_strings).state;  
-              root["System"]["NrOfModulesBlockingCharge"]          = id(charging).state ? 0:1;  
-              root["System"]["NrOfModulesBlockingDischarge"]          = id(discharging).state ? 0:1;  
-              
-              root["Io"]["AllowToCharge"]          = id(charging).state ? 1:0;
-              root["Io"]["AllowToDischarge"]       = id(discharging).state ? 1:0;
-              root["Io"]["AllowToBalance"]       = id(balancing).state ? 1:0;
-              
+              root["System"]["NrOfCellsPerBattery"]          = 16;                
                  
                             
 switch:
